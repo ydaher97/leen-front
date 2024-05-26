@@ -22,7 +22,9 @@ const WorkersList = () => {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/workers");
+        const response = await axios.get(
+          "https://leen-back.onrender.com/api/workers"
+        );
         setWorkers(response.data);
         setLoading(false);
       } catch (err) {

@@ -21,8 +21,12 @@ const OrderDetails = ({ order }) => {
     const fetchCustomerAndWorkerDetails = async () => {
       try {
         const [customerResponse, workerResponse] = await Promise.all([
-          axios.get(`http://localhost:8080/api/users/${order.customerId}`),
-          axios.get(`http://localhost:8080/api/workers/${order.workerId}`),
+          axios.get(
+            `https://leen-back.onrender.com/api/users/${order.customerId}`
+          ),
+          axios.get(
+            `https://leen-back.onrender.com/api/workers/${order.workerId}`
+          ),
         ]);
         setCustomerName(customerResponse.data.name);
         setWorkerName(workerResponse.data.name);

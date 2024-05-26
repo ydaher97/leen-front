@@ -34,11 +34,14 @@ const CreateCustomerForm = () => {
     setMessage("");
     setError("");
     try {
-      const response = await axios.post("http://localhost:8080/api/users", {
-        name,
-        email,
-        password,
-      });
+      const response = await axios.post(
+        "https://leen-back.onrender.com/api/users",
+        {
+          name,
+          email,
+          password,
+        }
+      );
       setMessage(response.data.message);
       setName("");
       setEmail("");

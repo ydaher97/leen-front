@@ -22,7 +22,9 @@ const CustomersList = () => {
   useEffect(() => {
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/users");
+        const response = await axios.get(
+          "https://leen-back.onrender.com/api/users"
+        );
         setCustomers(response.data);
         setLoading(false);
       } catch (err) {

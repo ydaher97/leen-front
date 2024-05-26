@@ -21,7 +21,9 @@ const ItemsList = () => {
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/items");
+        const response = await axios.get(
+          "https://leen-back.onrender.com/api/items"
+        );
         console.log(response.data);
         setItems(response.data);
         setLoading(false);

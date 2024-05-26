@@ -33,10 +33,13 @@ const CreateWorkerForm = () => {
     setMessage("");
     setError("");
     try {
-      const response = await axios.post("http://localhost:8080/api/items", {
-        name,
-        price,
-      });
+      const response = await axios.post(
+        "https://leen-back.onrender.com/api/items",
+        {
+          name,
+          price,
+        }
+      );
       setMessage(response.data.message);
       setName("");
       setPrice("");

@@ -32,9 +32,12 @@ const CreateWorkerForm = () => {
     setMessage("");
     setError("");
     try {
-      const response = await axios.post("http://localhost:8080/api/workers", {
-        name,
-      });
+      const response = await axios.post(
+        "https://leen-back.onrender.com/api/workers",
+        {
+          name,
+        }
+      );
       setMessage(response.data.message);
       setName("");
     } catch (error) {

@@ -36,7 +36,9 @@ const Cart = () => {
   useEffect(() => {
     const fetchWorkers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/workers");
+        const response = await axios.get(
+          "https://leen-back.onrender.com/api/workers"
+        );
         setWorkers(response.data);
       } catch (error) {
         console.error("Failed to fetch workers:", error);
@@ -45,7 +47,9 @@ const Cart = () => {
 
     const fetchCustomers = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/api/users");
+        const response = await axios.get(
+          "https://leen-back.onrender.com/api/users"
+        );
         setCustomers(response.data);
       } catch (error) {
         console.error("Failed to fetch customers:", error);
@@ -79,7 +83,7 @@ const Cart = () => {
       };
 
       const response = await axios.post(
-        "http://localhost:8080/api/orders",
+        "https://leen-back.onrender.com/api/orders",
         orderData
       );
       setOrder(response.data.orderDetails);
