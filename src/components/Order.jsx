@@ -51,6 +51,9 @@ const OrderDetails = ({ order }) => {
         Order Details
       </Typography>
       <Box mt={2}>
+        <Typography variant="h6">
+          Order Id: {order._id}
+        </Typography>
         <Typography variant="h6">Customer: {customerName}</Typography>
         <Typography variant="h6">
           Date: {new Date(order.date).toLocaleString()}
