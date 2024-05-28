@@ -25,7 +25,7 @@ import {
 } from "@mui/material";
 
 const Cart = () => {
-  const { cart, setCart } = useCart();
+  const { cart, setCart, addToCart, removeFromCart } = useCart();
   const [order, setOrder] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [workerId, setWorkerId] = useState("");
@@ -129,6 +129,12 @@ const Cart = () => {
                   }
                 />
                 <ListItemSecondaryAction>
+                  <Button onClick={() => addToCart(item)} color="primary">
+                    +
+                  </Button>
+                  <Button onClick={() => removeFromCart(item)} color="primary">
+                    -
+                  </Button>
                   <Typography>
                     ${(item.price * item.quantity).toFixed(2)}
                   </Typography>
