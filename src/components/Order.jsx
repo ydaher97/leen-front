@@ -30,6 +30,7 @@ const OrderDetails = ({ order }) => {
       <Typography variant="h4" component="h2" gutterBottom>
         Order Details
       </Typography>
+      <Typography variant="h6">Order Id: {order._id}</Typography>
       <Box mt={2}>
         <Typography variant="h6">
           Customer: {selectedCustomer?.name || "Loading..."}
