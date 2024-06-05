@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import axios from "axios";
 import {
   Typography,
@@ -12,32 +12,12 @@ import {
   Container,
   Box,
 } from "@mui/material";
+import { useCustomer } from "../context/CustomerContext";
+import { useUser } from "../context/UserContext";
 
 const OrderDetails = ({ order }) => {
-  const [customerName, setCustomerName] = useState("");
-  const [workerName, setWorkerName] = useState("");
-
-  useEffect(() => {
-    const fetchCustomerAndWorkerDetails = async () => {
-      try {
-        const [customerResponse, workerResponse] = await Promise.all([
-          axios.get(
-            `https://leen-back.onrender.com/api/users/${order.customerId}`
-          ),
-          axios.get(
-            `https://leen-back.onrender.com/api/workers/${order.workerId}`
-          ),
-        ]);
-        setCustomerName(customerResponse.data.name);
-        setWorkerName(workerResponse.data.name);
-        console.log(workerResponse.data.name);
-      } catch (error) {
-        console.error("Failed to fetch customer or worker details:", error);
-      }
-    };
-
-    fetchCustomerAndWorkerDetails();
-  }, [order.customerId, order.workerId]);
+  const { selectedCustomer, setSelectedCustomer } = useCustomer();
+  const { user, setUser } = useUser();
 
   const calculateTotal = (items) => {
     return items
@@ -51,11 +31,15 @@ const OrderDetails = ({ order }) => {
         Order Details
       </Typography>
       <Box mt={2}>
-        <Typography variant="h6">Customer: {customerName}</Typography>
+        <Typography variant="h6">
+          Customer: {selectedCustomer?.name || "Loading..."}
+        </Typography>
         <Typography variant="h6">
           Date: {new Date(order.date).toLocaleString()}
         </Typography>
-        <Typography variant="h6">Worker: {workerName}</Typography>
+        <Typography variant="h6">
+          Worker: {user?.name || "Loading..."}
+        </Typography>
       </Box>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>

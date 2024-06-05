@@ -1,50 +1,29 @@
-import React, { useState } from "react";
-import { Container, Button, Box } from "@mui/material";
-import CreateCustomerForm from "./components/CreateCustomerForm";
-import ItemsList from "./components/ItemList";
-import { CartProvider } from "../src/context/cartContext";
-import Cart from "./components/Cart";
-import CreateWorkerForm from "./components/createWorkerForm";
-import CreateItemForm from "./components/createItemForm";
-import CustomersList from "./components/CustomerList";
-import WorkersList from "./components/WorkerList";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import { Container } from "@mui/material";
+
+import { useUser } from "./context/UserContext";
+
+import SignIn from "./components/SignIn";
+import Admin from "./components/Admin";
+import Dashboard from "./components/Dashboard";
+import OrderPage from "./components/OrderPage";
+import ReceiptsPage from "./pages/receiptsPage";
 
 function App() {
-  const [show, setShow] = useState(false);
-
-  const handleOnclick = () => {
-    setShow(!show);
-  };
+  const { user } = useUser();
 
   return (
-    <CartProvider>
-      <Container width="100%" maxWidth={false} disableGutters>
-        <Box
-          display="flex"
-          flexDirection="column"
-          alignItems="center"
-          width="100%"
-        >
-          <Button variant="contained" color="primary" onClick={handleOnclick}>
-            {show ? "View Items & Cart" : "Create"}
-          </Button>
-          {show ? (
-            <Box width="100%" mt={2}>
-              <CreateCustomerForm />
-              <CreateWorkerForm />
-              <CreateItemForm />
-              <CustomersList />
-              <WorkersList />
-            </Box>
-          ) : (
-            <Box width="100%" mt={2}>
-              <ItemsList />
-              <Cart />
-            </Box>
-          )}
-        </Box>
+    <Router>
+      <Container width="100%" p={0} maxWidth={false} disableGutters>
+        <Routes>
+          <Route path="/signin" element={<SignIn />} />
+          {user && <Route path="/admin" element={<Admin />} />}
+          {user && <Route path="/dashboard" element={<Dashboard />} />}
+          {user && <Route path="/order" element={<OrderPage />} />}
+          <Route path="/receipts" element={<ReceiptsPage />} />
+        </Routes>
       </Container>
-    </CartProvider>
+    </Router>
   );
 }
 

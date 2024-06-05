@@ -9,7 +9,9 @@ export const useCart = () => {
 export const CartProvider = ({ children }) => {
   const [cart, setCart] = useState([]);
 
-  const addToCart = (item) => {
+  const addToCart = (item, quantity = 1) => {
+    if (!item || !item._id) return; // Ensure item exists and has an _id
+
     setCart((prevCart) => {
       const existingItem = prevCart.find(
         (cartItem) => cartItem._id === item._id
@@ -17,15 +19,17 @@ export const CartProvider = ({ children }) => {
       if (existingItem) {
         return prevCart.map((cartItem) =>
           cartItem._id === item._id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
+            ? { ...cartItem, quantity: cartItem.quantity + quantity }
             : cartItem
         );
       }
-      return [...prevCart, { ...item, quantity: 1 }];
+      return [...prevCart, { ...item, quantity }];
     });
   };
 
-  const removeFromCart = (item) => {
+  const removeFromCart = (item, quantity = 1) => {
+    if (!item || !item._id) return; // Ensure item exists and has an _id
+
     setCart((prevCart) => {
       const existingItem = prevCart.find(
         (cartItem) => cartItem._id === item._id
@@ -34,7 +38,7 @@ export const CartProvider = ({ children }) => {
         const updatedCart = prevCart
           .map((cartItem) =>
             cartItem._id === item._id
-              ? { ...cartItem, quantity: cartItem.quantity - 1 }
+              ? { ...cartItem, quantity: cartItem.quantity - quantity }
               : cartItem
           )
           .filter((cartItem) => cartItem.quantity > 0);

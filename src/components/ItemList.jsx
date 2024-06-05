@@ -10,12 +10,14 @@ import {
   Button,
   CircularProgress,
   Alert,
+  TextField,
 } from "@mui/material";
 
 const ItemsList = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [quantities, setQuantities] = useState({});
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -36,6 +38,18 @@ const ItemsList = () => {
     fetchItems();
   }, []);
 
+  const handleQuantityChange = (itemId, quantity) => {
+    setQuantities((prevQuantities) => ({
+      ...prevQuantities,
+      [itemId]: quantity,
+    }));
+  };
+
+  const handleAddToCart = (item) => {
+    const quantity = parseInt(quantities[item._id], 10) || 1; // Default to 1 if no quantity is set
+    addToCart(item, quantity);
+  };
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -52,14 +66,23 @@ const ItemsList = () => {
             <CardContent>
               <Typography variant="h5">{item.name}</Typography>
               <Typography variant="body2">
-                <strong>Price:</strong> ${item.price}
+                <strong>Price:</strong> ${item.price.toFixed(2)}
               </Typography>
+              <TextField
+                type="number"
+                label="Quantity"
+                value={quantities[item._id] || 1}
+                onChange={(e) => handleQuantityChange(item._id, e.target.value)}
+                inputProps={{ min: 1 }}
+                fullWidth
+                margin="normal"
+              />
             </CardContent>
             <CardActions>
               <Button
                 size="small"
                 color="primary"
-                onClick={() => addToCart(item)}
+                onClick={() => handleAddToCart(item)}
               >
                 Add to Cart
               </Button>

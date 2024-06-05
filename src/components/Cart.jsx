@@ -17,48 +17,16 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
-  TextField,
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
 } from "@mui/material";
+import { useCustomer } from "../context/CustomerContext";
+import { useUser } from "../context/UserContext";
 
 const Cart = () => {
+  const { selectedCustomer } = useCustomer();
+  const { user } = useUser();
   const { cart, setCart, addToCart, removeFromCart } = useCart();
   const [order, setOrder] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
-  const [workerId, setWorkerId] = useState("");
-  const [customerId, setCustomerId] = useState("");
-  const [workers, setWorkers] = useState([]);
-  const [customers, setCustomers] = useState([]);
-
-  useEffect(() => {
-    const fetchWorkers = async () => {
-      try {
-        const response = await axios.get(
-          "https://leen-back.onrender.com/api/workers"
-        );
-        setWorkers(response.data);
-      } catch (error) {
-        console.error("Failed to fetch workers:", error);
-      }
-    };
-
-    const fetchCustomers = async () => {
-      try {
-        const response = await axios.get(
-          "https://leen-back.onrender.com/api/users"
-        );
-        setCustomers(response.data);
-      } catch (error) {
-        console.error("Failed to fetch customers:", error);
-      }
-    };
-
-    fetchWorkers();
-    fetchCustomers();
-  }, []);
 
   const handleOpenModal = () => {
     setModalOpen(true);
@@ -71,7 +39,7 @@ const Cart = () => {
   const handlePlaceOrder = async () => {
     try {
       const orderData = {
-        customerId,
+        customerId: selectedCustomer?._id,
         items: cart.map((item) => ({
           itemId: item._id,
           quantity: item.quantity,
@@ -79,7 +47,7 @@ const Cart = () => {
           name: item.name,
         })),
         date: new Date(),
-        workerId,
+        workerId: user?._id,
       };
 
       const response = await axios.post(
@@ -155,37 +123,7 @@ const Cart = () => {
       <Dialog open={modalOpen} onClose={handleCloseModal}>
         <DialogTitle>Place Order</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please select the Worker and Customer to place the order.
-          </DialogContentText>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Worker</InputLabel>
-            <Select
-              value={workerId}
-              onChange={(e) => setWorkerId(e.target.value)}
-              label="Worker"
-            >
-              {workers.map((worker) => (
-                <MenuItem key={worker._id} value={worker._id}>
-                  {worker.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-          <FormControl fullWidth margin="normal">
-            <InputLabel>Customer</InputLabel>
-            <Select
-              value={customerId}
-              onChange={(e) => setCustomerId(e.target.value)}
-              label="Customer"
-            >
-              {customers.map((customer) => (
-                <MenuItem key={customer._id} value={customer._id}>
-                  {customer.name}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+          <DialogContentText>are you sure</DialogContentText>
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
