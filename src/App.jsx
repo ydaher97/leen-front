@@ -1,4 +1,9 @@
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from "react-router-dom";
 import { Container } from "@mui/material";
 
 import { useUser } from "./context/UserContext";
@@ -21,6 +26,7 @@ function App() {
           {user && <Route path="/dashboard" element={<Dashboard />} />}
           {user && <Route path="/order" element={<OrderPage />} />}
           <Route path="/receipts" element={<ReceiptsPage />} />
+          <Route path="*" element={<Navigate to="/signin" replace />} />
         </Routes>
       </Container>
     </Router>
