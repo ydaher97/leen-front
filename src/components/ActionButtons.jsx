@@ -29,14 +29,19 @@ const ActionButtons = () => {
   };
 
   return (
-    <Box display="flex" justifyContent="space-around" mt={2}>
+    <Box
+      display="flex"
+      justifyContent="space-around"
+      mt={2}
+      sx={{ direction: "rtl" }}
+    >
       <Button
         variant="contained"
         color="primary"
         onClick={() => handleButtonClick("Receipts")}
         disabled={!selectedCustomer}
       >
-        Receipts
+        קבלות
       </Button>
       <Button
         variant="contained"
@@ -44,7 +49,7 @@ const ActionButtons = () => {
         onClick={() => handleButtonClick("Order")}
         disabled={!selectedCustomer}
       >
-        Order
+        הזמנה
       </Button>
       <Button
         variant="contained"
@@ -52,7 +57,7 @@ const ActionButtons = () => {
         onClick={() => handleButtonClick("Document")}
         disabled={!selectedCustomer}
       >
-        Document
+        מסמך
       </Button>
       <Button
         variant="contained"
@@ -60,7 +65,7 @@ const ActionButtons = () => {
         onClick={() => handleButtonClick("Invoice")}
         disabled={!selectedCustomer}
       >
-        Invoice
+        חשבונית
       </Button>
       <Button
         variant="contained"
@@ -68,7 +73,7 @@ const ActionButtons = () => {
         onClick={() => handleButtonClick("Delivery")}
         disabled={!selectedCustomer}
       >
-        Delivery
+        משלוח
       </Button>
     </Box>
   );

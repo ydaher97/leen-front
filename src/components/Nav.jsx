@@ -60,9 +60,10 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    navigate("/signin");
+
     setUser(null);
     handleUserMenuClose();
-    navigate("/signin");
   };
 
   const handleDashboardClick = () => {
@@ -79,11 +80,11 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="static" dir="rtl">
         <Toolbar>
           <Button color="inherit" onClick={handleDashboardClick}>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
-              Dashboard
+              לוח בקרה
             </Typography>
           </Button>
           <Button color="inherit" onClick={handleUserMenuClick}>
@@ -94,33 +95,32 @@ const Navbar = () => {
             open={Boolean(anchorEl)}
             onClose={handleUserMenuClose}
           >
-            <MenuListItem onClick={handleLogout}>Logout</MenuListItem>
+            <MenuListItem onClick={handleLogout}>התנתקות</MenuListItem>
           </Menu>
           {selectedCustomer?.name && (
             <Typography variant="body1" sx={{ mr: 2 }}>
-              Selected Customer: {selectedCustomer.name}
+              לקוח נבחר: {selectedCustomer.name}
             </Typography>
           )}
           <Button color="inherit" onClick={handleOpenModal}>
-            Select Customer
+            בחר לקוח
           </Button>
+          {user?.isAdmin && (
+            <Button color="inherit" onClick={() => navigate("/admin")}>
+              מנהל
+            </Button>
+          )}
         </Toolbar>
       </AppBar>
       <Dialog open={modalOpen} onClose={handleCloseModal}>
-        <DialogTitle>Select Customer</DialogTitle>
+        <DialogTitle>בחר לקוח</DialogTitle>
         <DialogContent>
-          <DialogContentText>
-            Please select a customer to proceed.
-          </DialogContentText>
+          <DialogContentText>אנא בחר לקוח כדי להמשיך.</DialogContentText>
           <Autocomplete
             options={customers}
             getOptionLabel={(customer) => customer.name}
             renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Search Customer"
-                variant="outlined"
-              />
+              <TextField {...params} label="חיפוש לקוח" variant="outlined" />
             )}
             onChange={handleCustomerSelect}
             value={selectedCustomer}
@@ -131,10 +131,10 @@ const Navbar = () => {
         </DialogContent>
         <DialogActions>
           <Button onClick={handleCloseModal} color="primary">
-            Cancel
+            ביטול
           </Button>
           <Button onClick={handleConfirmSelection} color="primary">
-            Confirm
+            אשר
           </Button>
         </DialogActions>
       </Dialog>

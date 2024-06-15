@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import axios from "axios";
 import { TextField, Button, Box, Typography, Alert } from "@mui/material";
 import { useNavigate } from "react-router-dom";
@@ -9,7 +9,7 @@ const SignIn = () => {
   const [password, setPassword] = useState("");
   const [message, setMessage] = useState(null);
   const [error, setError] = useState(null);
-  const history = useNavigate();
+  const navigate = useNavigate();
   const { signIn } = useUser();
 
   const handleSubmit = async (e) => {
@@ -24,12 +24,11 @@ const SignIn = () => {
         }
       );
       signIn(response.data?.worker);
-      //   setMessage(response.data.message);
       setError(null);
-      history("/dashboard");
+      navigate("/dashboard");
     } catch (error) {
       setMessage(null);
-      setError(error.response?.data?.message || "Sign-in failed");
+      setError(error.response?.data?.message || "ההתחברות נכשלה");
     }
   };
 
@@ -37,15 +36,15 @@ const SignIn = () => {
     <Box
       component="form"
       onSubmit={handleSubmit}
-      sx={{ maxWidth: 400, mx: "auto", mt: 2 }}
+      sx={{ maxWidth: 400, mx: "auto", mt: 2, direction: "rtl" }}
     >
       <Typography variant="h4" component="h2" gutterBottom>
-        Sign In
+        התחברות
       </Typography>
       {message && <Alert severity="success">{message}</Alert>}
       {error && <Alert severity="error">{error}</Alert>}
       <TextField
-        label="Name"
+        label="שם"
         type="text"
         value={name}
         onChange={(e) => setName(e.target.value)}
@@ -54,7 +53,7 @@ const SignIn = () => {
         margin="normal"
       />
       <TextField
-        label="Password"
+        label="סיסמא"
         type="password"
         value={password}
         onChange={(e) => setPassword(e.target.value)}
@@ -69,7 +68,7 @@ const SignIn = () => {
         fullWidth
         sx={{ mt: 2 }}
       >
-        Sign In
+        התחבר
       </Button>
     </Box>
   );

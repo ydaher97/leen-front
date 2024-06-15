@@ -5,18 +5,29 @@ import CreateWorkerForm from "./createWorkerForm";
 import CreateItemForm from "./createItemForm";
 import CustomersList from "./CustomerList";
 import WorkersList from "./WorkerList";
+import Navbar from "./Nav";
 
 const Admin = () => {
   return (
-    <Box display="flex" flexDirection="column" alignItems="center" width="100%">
-      <Box width="100%" mt={2}>
-        <CreateCustomerForm />
-        <CreateWorkerForm />
-        <CreateItemForm />
-        <CustomersList />
-        <WorkersList />
+    <>
+      <Navbar />
+
+      <Box
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        width="100%"
+        mt={2}
+      >
+        <Box width="100%" mt={2}>
+          <CreateCustomerForm />
+          <CreateWorkerForm />
+          <CreateItemForm />
+          <CustomersList />
+          <WorkersList />
+        </Box>
       </Box>
-    </Box>
+    </>
   );
 };
 

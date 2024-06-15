@@ -55,22 +55,24 @@ const ItemsList = () => {
   }
 
   if (error) {
-    return <Alert severity="error">Error loading items: {error.message}</Alert>;
+    return (
+      <Alert severity="error">שגיאה בטעינת הפריטים: {error.message}</Alert>
+    );
   }
 
   return (
-    <Grid container spacing={2} padding={3}>
+    <Grid container spacing={2} padding={3} direction="rtl">
       {items?.map((item) => (
         <Grid item key={item._id} xs={12} sm={6} md={4}>
           <Card>
             <CardContent>
               <Typography variant="h5">{item.name}</Typography>
               <Typography variant="body2">
-                <strong>Price:</strong> ${item.price.toFixed(2)}
+                <strong>מחיר:</strong> ₪{item.price.toFixed(2)}
               </Typography>
               <TextField
                 type="number"
-                label="Quantity"
+                label="כמות"
                 value={quantities[item._id] || 1}
                 onChange={(e) => handleQuantityChange(item._id, e.target.value)}
                 inputProps={{ min: 1 }}
@@ -84,7 +86,7 @@ const ItemsList = () => {
                 color="primary"
                 onClick={() => handleAddToCart(item)}
               >
-                Add to Cart
+                הוסף לסל
               </Button>
             </CardActions>
           </Card>

@@ -1,5 +1,4 @@
-import React, { useEffect } from "react";
-import axios from "axios";
+import React, { useState } from "react";
 import {
   Typography,
   Table,
@@ -11,13 +10,21 @@ import {
   Paper,
   Container,
   Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
 } from "@mui/material";
 import { useCustomer } from "../context/CustomerContext";
 import { useUser } from "../context/UserContext";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
+import PDFDocument from "../pdf/OrderPdf";
 
 const OrderDetails = ({ order }) => {
-  const { selectedCustomer, setSelectedCustomer } = useCustomer();
-  const { user, setUser } = useUser();
+  const { selectedCustomer } = useCustomer();
+  const { user } = useUser();
+  const [openPdfViewer, setOpenPdfViewer] = useState(false);
 
   const calculateTotal = (items) => {
     return items
@@ -25,31 +32,37 @@ const OrderDetails = ({ order }) => {
       .toFixed(2);
   };
 
+  const handleOpenPdfViewer = () => {
+    setOpenPdfViewer(true);
+  };
+
+  const handleClosePdfViewer = () => {
+    setOpenPdfViewer(false);
+  };
+
   return (
-    <Container>
+    <Container sx={{ direction: "rtl" }}>
       <Typography variant="h4" component="h2" gutterBottom>
-        Order Details
+        פרטי ההזמנה
       </Typography>
-      <Typography variant="h6">Order Id: {order._id}</Typography>
+      <Typography variant="h6">מספר הזמנה: {order._id}</Typography>
       <Box mt={2}>
         <Typography variant="h6">
-          Customer: {selectedCustomer?.name || "Loading..."}
+          לקוח: {selectedCustomer?.name || "טוען..."}
         </Typography>
         <Typography variant="h6">
-          Date: {new Date(order.date).toLocaleString()}
+          תאריך: {new Date(order.date).toLocaleString()}
         </Typography>
-        <Typography variant="h6">
-          Worker: {user?.name || "Loading..."}
-        </Typography>
+        <Typography variant="h6">עובד: {user?.name || "טוען..."}</Typography>
       </Box>
       <TableContainer component={Paper} sx={{ mt: 2 }}>
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Name</TableCell>
-              <TableCell align="right">Quantity</TableCell>
-              <TableCell align="right">Price</TableCell>
-              <TableCell align="right">Total</TableCell>
+              <TableCell>שם</TableCell>
+              <TableCell align="right">כמות</TableCell>
+              <TableCell align="right">מחיר</TableCell>
+              <TableCell align="right">סה"כ</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -57,26 +70,79 @@ const OrderDetails = ({ order }) => {
               <TableRow key={index}>
                 <TableCell>{item.name}</TableCell>
                 <TableCell align="right">{item.quantity}</TableCell>
-                <TableCell align="right">${item.price.toFixed(2)}</TableCell>
+                <TableCell align="right">₪{item.price.toFixed(2)}</TableCell>
                 <TableCell align="right">
-                  ${(item.price * item.quantity).toFixed(2)}
+                  ₪{(item.price * item.quantity).toFixed(2)}
                 </TableCell>
               </TableRow>
             ))}
             <TableRow>
               <TableCell rowSpan={3} />
               <TableCell colSpan={2}>
-                <Typography variant="h6">Total</Typography>
+                <Typography variant="h6">סה"כ</Typography>
               </TableCell>
               <TableCell align="right">
                 <Typography variant="h6">
-                  ${calculateTotal(order.items)}
+                  ₪{calculateTotal(order.items)}
                 </Typography>
               </TableCell>
             </TableRow>
           </TableBody>
         </Table>
       </TableContainer>
+      <Box mt={2}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleOpenPdfViewer}
+        >
+          צפה ב-PDF
+        </Button>
+        <PDFDownloadLink
+          document={
+            <PDFDocument
+              order={order}
+              customer={selectedCustomer?.name}
+              worker={user?.name}
+            />
+          }
+          fileName={`order_${order._id}.pdf`}
+        >
+          {({ loading }) =>
+            loading ? (
+              <Button variant="contained" disabled>
+                טוען PDF...
+              </Button>
+            ) : (
+              <Button variant="contained" color="primary">
+                הורד PDF
+              </Button>
+            )
+          }
+        </PDFDownloadLink>
+      </Box>
+      <Dialog
+        open={openPdfViewer}
+        onClose={handleClosePdfViewer}
+        maxWidth="lg"
+        fullWidth
+      >
+        <DialogTitle>צפייה ב-PDF</DialogTitle>
+        <DialogContent>
+          <PDFViewer width="100%" height="600">
+            <PDFDocument
+              order={order}
+              customer={selectedCustomer?.name}
+              worker={user?.name}
+            />
+          </PDFViewer>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleClosePdfViewer} color="primary">
+            סגור
+          </Button>
+        </DialogActions>
+      </Dialog>
     </Container>
   );
 };
