@@ -21,7 +21,7 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     backgroundColor: "#FFFFFF",
-    direction: "rtl",
+    // direction: "rtl",
     fontFamily: "Rubik",
   },
   header: {
@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 10,
+    textAlign: "right",
   },
   table: {
     display: "table",
@@ -39,6 +40,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRightWidth: 0,
     borderBottomWidth: 0,
+    textAlign: "right",
   },
   tableRow: {
     flexDirection: "row",
@@ -66,10 +68,12 @@ const styles = StyleSheet.create({
     margin: 5,
     fontSize: 12,
     fontWeight: "bold",
+    textAlign: "right",
   },
   tableCell: {
     margin: 5,
     fontSize: 10,
+    textAlign: "right",
   },
   totalText: {
     fontSize: 12,
@@ -92,33 +96,33 @@ const PDFDocument = ({ order, customer, worker }) => (
       <View style={styles.table}>
         <View style={styles.tableRow}>
           <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>שם</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>כמות</Text>
+            <Text style={styles.tableCellHeader}>סה"כ</Text>
           </View>
           <View style={styles.tableColHeader}>
             <Text style={styles.tableCellHeader}>מחיר</Text>
           </View>
           <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>סה"כ</Text>
+            <Text style={styles.tableCellHeader}>כמות</Text>
+          </View>
+          <View style={styles.tableColHeader}>
+            <Text style={styles.tableCellHeader}>שם</Text>
           </View>
         </View>
         {order.items.map((item, index) => (
           <View style={styles.tableRow} key={index}>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item.name}</Text>
-            </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item.quantity}</Text>
+              <Text style={styles.tableCell}>
+                ₪{(item.price * item.quantity).toFixed(2)}
+              </Text>
             </View>
             <View style={styles.tableCol}>
               <Text style={styles.tableCell}>₪{item.price.toFixed(2)}</Text>
             </View>
             <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>
-                ₪{(item.price * item.quantity).toFixed(2)}
-              </Text>
+              <Text style={styles.tableCell}>{item.quantity}</Text>
+            </View>
+            <View style={styles.tableCol}>
+              <Text style={styles.tableCell}>{item.name}</Text>
             </View>
           </View>
         ))}

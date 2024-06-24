@@ -1,8 +1,7 @@
-import React from "react";
 import ItemsList from "./ItemList";
 import Cart from "./Cart";
 import Navbar from "./Nav";
-import { Container, Button, Box } from "@mui/material";
+import { Container, Box } from "@mui/material";
 
 const OrderPage = () => {
   return (
@@ -11,7 +10,7 @@ const OrderPage = () => {
       <Container>
         <Box width="100%" mt={2}>
           <ItemsList />
-          <Cart />
+          <Cart endpint={"orders"} />
         </Box>
       </Container>
     </>

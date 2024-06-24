@@ -14,7 +14,8 @@ import Dashboard from "./components/Dashboard";
 import OrderPage from "./components/OrderPage";
 import ReceiptsPage from "./pages/receiptsPage";
 import DocumentsPage from "./pages/DocumentPage";
-import InvoicePage from "./pages/InvoicePage";
+import InvoicePage from "./pages/InvoicPage";
+import DeliveryPage from "./pages/DeliveryPage";
 
 function App() {
   const { user } = useUser();
@@ -27,10 +28,10 @@ function App() {
           {user && <Route path="/admin" element={<Admin />} />}
           {user && <Route path="/dashboard" element={<Dashboard />} />}
           {user && <Route path="/order" element={<OrderPage />} />}
-          <Route path="/receipts" element={<ReceiptsPage />} />
-          <Route path="/document" element={<DocumentsPage />} />
-          <Route path="/invoice" element={<InvoicePage />} />
-
+          {user && <Route path="/receipts" element={<ReceiptsPage />} />}
+          {user && <Route path="/document" element={<DocumentsPage />} />}
+          {user && <Route path="/invoice" element={<InvoicePage />} />}
+          {user && <Route path="/delivery" element={<DeliveryPage />} />}
           {!user && (
             <Route path="*" element={<Navigate to="/signin" replace />} />
           )}

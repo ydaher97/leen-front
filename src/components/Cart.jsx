@@ -21,7 +21,7 @@ import {
 import { useCustomer } from "../context/CustomerContext";
 import { useUser } from "../context/UserContext";
 
-const Cart = () => {
+const Cart = ({ endpint }) => {
   const { selectedCustomer } = useCustomer();
   const { user } = useUser();
   const { cart, setCart, addToCart, removeFromCart } = useCart();
@@ -51,10 +51,10 @@ const Cart = () => {
       };
 
       const response = await axios.post(
-        "https://leen-back.onrender.com/api/orders",
+        `https://leen-back.onrender.com/api/${endpint}`,
         orderData
       );
-      setOrder(response.data.orderDetails);
+      setOrder(response.data.details);
       setCart([]);
       handleCloseModal();
     } catch (error) {

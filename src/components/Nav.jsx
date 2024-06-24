@@ -33,7 +33,6 @@ const Navbar = () => {
         const response = await axios.get(
           "https://leen-back.onrender.com/api/users"
         );
-        console.log(response.data);
         setCustomers(response.data);
       } catch (error) {
         console.error("Error fetching customers:", error);
@@ -60,9 +59,9 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
+    setUser(null);
     navigate("/signin");
 
-    setUser(null);
     handleUserMenuClose();
   };
 
