@@ -20,7 +20,13 @@ import {
   Container,
   Snackbar,
   Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  IconButton,
 } from "@mui/material";
+import { Trash, Pencil } from "lucide-react";
 import Navbar from "../components/Nav";
 
 const ReceiptsPage = () => {
@@ -36,6 +42,11 @@ const ReceiptsPage = () => {
     branch: "",
     account: "",
   });
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isEditing, setIsEditing] = useState(false);
+  const [editIndex, setEditIndex] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -46,7 +57,35 @@ const ReceiptsPage = () => {
   };
 
   const handleAddReceipt = () => {
-    setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
+    if (newReceipt.paymentType && newReceipt.amount) {
+      setReceipts((prevReceipts) => [...prevReceipts, newReceipt]);
+      setNewReceipt({
+        paymentType: "",
+        amount: "",
+        date: "",
+        certification: "",
+        bank: "",
+        branch: "",
+        account: "",
+      });
+      setDialogOpen(false);
+    } else {
+      setErrorMessage("Payment Type and Amount are required.");
+    }
+  };
+
+  const handleEditReceipt = (index) => {
+    setIsEditing(true);
+    setEditIndex(index);
+    setNewReceipt(receipts[index]);
+    setDialogOpen(true);
+  };
+
+  const handleSaveEditReceipt = () => {
+    const updatedReceipts = receipts.map((receipt, index) =>
+      index === editIndex ? newReceipt : receipt
+    );
+    setReceipts(updatedReceipts);
     setNewReceipt({
       paymentType: "",
       amount: "",
@@ -56,15 +95,20 @@ const ReceiptsPage = () => {
       branch: "",
       account: "",
     });
+    setDialogOpen(false);
+    setIsEditing(false);
+    setEditIndex(null);
   };
-  const [successMessage, setSuccessMessage] = useState("");
-  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleDeleteReceipt = (index) => {
+    setReceipts((prevReceipts) => prevReceipts.filter((_, i) => i !== index));
+  };
 
   const handleSaveReceipts = async () => {
     try {
       const { _id: workerId } = user;
       const { _id: customerId } = selectedCustomer;
-      await axios.post("https://leen-back.onrender.com/api//receipt/bulk", {
+      await axios.post("https://leen-back.onrender.com/api/receipt/bulk", {
         receipts,
         workerId,
         customerId,
@@ -78,19 +122,119 @@ const ReceiptsPage = () => {
     }
   };
 
+  const handleOpenDialog = () => {
+    setDialogOpen(true);
+  };
+
+  const handleCloseDialog = () => {
+    setDialogOpen(false);
+    setNewReceipt({
+      paymentType: "",
+      amount: "",
+      date: "",
+      certification: "",
+      bank: "",
+      branch: "",
+      account: "",
+    });
+    setIsEditing(false);
+    setEditIndex(null);
+  };
+
   return (
     <>
       <Navbar />
       <Container>
         <Box p={2} dir="rtl">
           <h1>עמוד קבלות</h1>
-          <Box mb={2}>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleOpenDialog}
+          >
+            הוסף קבלה
+          </Button>
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell>סוג התשלום</TableCell>
+                  <TableCell>סכום</TableCell>
+                  <TableCell>תאריך</TableCell>
+                  <TableCell>אישור</TableCell>
+                  <TableCell>בנק</TableCell>
+                  <TableCell>סניף</TableCell>
+                  <TableCell>חשבון</TableCell>
+                  <TableCell>עריכה</TableCell>
+                  <TableCell>מחיקה</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {receipts.map((receipt, index) => (
+                  <TableRow key={index}>
+                    <TableCell>{receipt.paymentType}</TableCell>
+                    <TableCell>{receipt.amount}</TableCell>
+                    <TableCell>{receipt.date}</TableCell>
+                    <TableCell>{receipt.certification}</TableCell>
+                    <TableCell>{receipt.bank}</TableCell>
+                    <TableCell>{receipt.branch}</TableCell>
+                    <TableCell>{receipt.account}</TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-label="edit"
+                        onClick={() => handleEditReceipt(index)}
+                      >
+                        <Pencil />
+                      </IconButton>
+                    </TableCell>
+                    <TableCell>
+                      <IconButton
+                        aria-label="delete"
+                        onClick={() => handleDeleteReceipt(index)}
+                      >
+                        <Trash />
+                      </IconButton>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSaveReceipts}
+          >
+            שמור
+          </Button>
+        </Box>
+        {successMessage && (
+          <Snackbar open={!!successMessage} autoHideDuration={6000}>
+            <Alert severity="success">{successMessage}</Alert>
+          </Snackbar>
+        )}
+        {errorMessage && (
+          <Snackbar open={!!errorMessage} autoHideDuration={6000}>
+            <Alert severity="error">{errorMessage}</Alert>
+          </Snackbar>
+        )}
+
+        {/* Add Receipt Dialog */}
+        <Dialog
+          open={dialogOpen}
+          onClose={handleCloseDialog}
+          fullWidth
+          maxWidth="sm"
+        >
+          <DialogTitle>הוסף קבלה</DialogTitle>
+          <DialogContent>
             <FormControl
               variant="outlined"
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2, minWidth: 120 }}
               dir="rtl"
               locale="he-IL"
+              required
             >
               <InputLabel id="payment-type-label">סוג התשלום</InputLabel>
               <Select
@@ -115,9 +259,11 @@ const ReceiptsPage = () => {
               onChange={handleChange}
               variant="outlined"
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2 }}
               dir="rtl"
               locale="he-IL"
+              required
+              fullWidth
             />
             <TextField
               name="date"
@@ -128,9 +274,11 @@ const ReceiptsPage = () => {
               variant="outlined"
               size="small"
               InputLabelProps={{ shrink: true }}
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2 }}
               dir="rtl"
               locale="he-IL"
+              fullWidth
+              required
             />
             <TextField
               name="certification"
@@ -139,9 +287,10 @@ const ReceiptsPage = () => {
               onChange={handleChange}
               variant="outlined"
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2 }}
               dir="rtl"
               locale="he-IL"
+              fullWidth
             />
             <TextField
               name="bank"
@@ -150,9 +299,10 @@ const ReceiptsPage = () => {
               onChange={handleChange}
               variant="outlined"
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2 }}
               dir="rtl"
               locale="he-IL"
+              fullWidth
             />
             <TextField
               name="branch"
@@ -161,9 +311,10 @@ const ReceiptsPage = () => {
               onChange={handleChange}
               variant="outlined"
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2 }}
               dir="rtl"
               locale="he-IL"
+              fullWidth
             />
             <TextField
               name="account"
@@ -172,65 +323,27 @@ const ReceiptsPage = () => {
               onChange={handleChange}
               variant="outlined"
               size="small"
-              sx={{ mr: 1 }}
+              sx={{ mr: 1, mt: 2 }}
               dir="rtl"
               locale="he-IL"
+              fullWidth
             />
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleAddReceipt}
-            >
-              הוסף קבלה
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCloseDialog} color="primary">
+              ביטול
             </Button>
-          </Box>
-          <TableContainer component={Paper}>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>סוג התשלום</TableCell>
-                  <TableCell>סכום</TableCell>
-                  <TableCell>תאריך</TableCell>
-                  <TableCell>אישור</TableCell>
-                  <TableCell>בנק</TableCell>
-                  <TableCell>סניף</TableCell>
-                  <TableCell>חשבון</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {receipts.map((receipt, index) => (
-                  <TableRow key={index}>
-                    <TableCell>{receipt.paymentType}</TableCell>
-                    <TableCell>{receipt.amount}</TableCell>
-                    <TableCell>{receipt.date}</TableCell>
-                    <TableCell>{receipt.certification}</TableCell>
-                    <TableCell>{receipt.bank}</TableCell>
-                    <TableCell>{receipt.branch}</TableCell>
-                    <TableCell>{receipt.account}</TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </TableContainer>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleSaveReceipts}
-          >
-            שמור
-          </Button>
-        </Box>
-        {successMessage && (
-          <Snackbar open={!!successMessage} autoHideDuration={6000}>
-            <Alert severity="success">{successMessage}</Alert>
-          </Snackbar>
-        )}
-        {/* Error message */}
-        {errorMessage && (
-          <Snackbar open={!!errorMessage} autoHideDuration={6000}>
-            <Alert severity="error">{errorMessage}</Alert>
-          </Snackbar>
-        )}
+            {isEditing ? (
+              <Button onClick={handleSaveEditReceipt} color="primary">
+                שמור שינויים
+              </Button>
+            ) : (
+              <Button onClick={handleAddReceipt} color="primary">
+                הוסף
+              </Button>
+            )}
+          </DialogActions>
+        </Dialog>
       </Container>
     </>
   );

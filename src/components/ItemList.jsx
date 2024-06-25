@@ -12,12 +12,14 @@ import {
   Alert,
   TextField,
 } from "@mui/material";
+import { Plus } from "lucide-react";
 
 const ItemsList = () => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [quantities, setQuantities] = useState({});
+  const [searchQuery, setSearchQuery] = useState("");
   const { addToCart } = useCart();
 
   useEffect(() => {
@@ -50,6 +52,14 @@ const ItemsList = () => {
     addToCart(item, quantity);
   };
 
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const filteredItems = items.filter((item) =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   if (loading) {
     return <CircularProgress />;
   }
@@ -61,38 +71,51 @@ const ItemsList = () => {
   }
 
   return (
-    <Grid container spacing={2} padding={3} direction="rtl">
-      {items?.map((item) => (
-        <Grid item key={item._id} xs={12} sm={6} md={4}>
-          <Card>
-            <CardContent>
-              <Typography variant="h5">{item.name}</Typography>
-              <Typography variant="body2">
-                <strong>מחיר:</strong> ₪{item.price.toFixed(2)}
-              </Typography>
-              <TextField
-                type="number"
-                label="כמות"
-                value={quantities[item._id] || 1}
-                onChange={(e) => handleQuantityChange(item._id, e.target.value)}
-                inputProps={{ min: 1 }}
-                fullWidth
-                margin="normal"
-              />
-            </CardContent>
-            <CardActions>
-              <Button
-                size="small"
-                color="primary"
-                onClick={() => handleAddToCart(item)}
-              >
-                הוסף לסל
-              </Button>
-            </CardActions>
-          </Card>
-        </Grid>
-      ))}
-    </Grid>
+    <div>
+      <TextField
+        label="חפש פריטים"
+        variant="outlined"
+        fullWidth
+        margin="normal"
+        value={searchQuery}
+        onChange={handleSearchChange}
+      />
+      <Grid container spacing={2} padding={3} direction="rtl">
+        {filteredItems.map((item) => (
+          <Grid item key={item._id} xs={12} sm={6} md={4}>
+            <Card>
+              <CardContent>
+                <Typography variant="h5">{item.name}</Typography>
+                <Typography variant="body2">
+                  <strong>מחיר:</strong> ₪{item.price.toFixed(2)}
+                </Typography>
+                <TextField
+                  type="number"
+                  label="כמות"
+                  value={quantities[item._id] || 1}
+                  onChange={(e) =>
+                    handleQuantityChange(item._id, e.target.value)
+                  }
+                  inputProps={{ min: 1 }}
+                  fullWidth
+                  margin="normal"
+                />
+              </CardContent>
+              <CardActions>
+                <Button
+                  size="small"
+                  color="primary"
+                  onClick={() => handleAddToCart(item)}
+                >
+                  הוסף לסל
+                  <Plus />
+                </Button>
+              </CardActions>
+            </Card>
+          </Grid>
+        ))}
+      </Grid>
+    </div>
   );
 };
 

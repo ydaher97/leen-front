@@ -98,7 +98,7 @@ const Navbar = () => {
           </Menu>
           {selectedCustomer?.name && (
             <Typography variant="body1" sx={{ mr: 2 }}>
-              לקוח נבחר: {selectedCustomer.name}
+              לקוח : {selectedCustomer.name}
             </Typography>
           )}
           <Button color="inherit" onClick={handleOpenModal}>

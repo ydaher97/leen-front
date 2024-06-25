@@ -26,6 +26,7 @@ const DocumentsPage = () => {
   const [orders, setOrders] = useState([]);
   const [invoices, setInvoices] = useState([]);
   const [deliveries, setDeliveries] = useState([]);
+  const [receipts, setReceipts] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
   const { selectedCustomer } = useCustomer();
@@ -48,11 +49,18 @@ const DocumentsPage = () => {
           `https://leen-back.onrender.com/api/delivery/customer/${selectedCustomer._id}`
         );
         setDeliveries(deliveriesResponse.data.orders || []);
+
+        const receiptsResponse = await axios.get(
+          `https://leen-back.onrender.com/api/receipt/${selectedCustomer._id}`
+        );
+        setReceipts(receiptsResponse.data || []);
+        console.log(receiptsResponse.data);
       } catch (error) {
         console.error("Failed to fetch documents:", error);
         setOrders([]);
         setInvoices([]);
         setDeliveries([]);
+        setReceipts([]);
       }
     };
 
@@ -197,6 +205,55 @@ const DocumentsPage = () => {
                         variant="contained"
                         color="primary"
                         onClick={() => handleViewDocument(delivery)}
+                      >
+                        צפה
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        )}
+
+        {/* Receipts Table */}
+        <Typography variant="h5" component="h3" gutterBottom align="right">
+          קבלות
+        </Typography>
+        {receipts.length === 0 ? (
+          <Typography variant="body1" align="right">
+            אין קבלות זמינות.
+          </Typography>
+        ) : (
+          <TableContainer component={Paper}>
+            <Table>
+              <TableHead>
+                <TableRow>
+                  <TableCell align="right">מספר קבלה</TableCell>
+                  <TableCell align="right">לקוח</TableCell>
+                  <TableCell align="right">תאריך</TableCell>
+                  <TableCell align="right">סוג תשלום</TableCell>
+                  <TableCell align="right">סכום</TableCell>
+                  <TableCell align="right">בנק</TableCell>
+                  <TableCell align="right">צפה</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {receipts.map((receipt) => (
+                  <TableRow key={receipt._id}>
+                    <TableCell align="right">{receipt._id}</TableCell>
+                    <TableCell align="right">{selectedCustomer.name}</TableCell>
+                    <TableCell align="right">
+                      {new Date(receipt.date).toLocaleString()}
+                    </TableCell>
+                    <TableCell align="right">{receipt.paymentType}</TableCell>
+                    <TableCell align="right">{receipt.amount}</TableCell>
+                    <TableCell align="right">{receipt.bank}</TableCell>
+                    <TableCell align="right">
+                      <Button
+                        variant="contained"
+                        color="primary"
+                        onClick={() => handleViewDocument(receipt)}
                       >
                         צפה
                       </Button>
