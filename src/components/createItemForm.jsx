@@ -12,6 +12,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { Plus } from "lucide-react";
 
 const CreateWorkerForm = () => {
   const [name, setName] = useState("");
@@ -44,7 +45,7 @@ const CreateWorkerForm = () => {
       setName("");
       setPrice("");
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to create customer");
+      setError(error.response?.data?.message || "נכשל ביצירת פריט");
     }
   };
 
@@ -55,13 +56,20 @@ const CreateWorkerForm = () => {
         variant="contained"
         color="primary"
         fullWidth
-        sx={{ mt: 2 }}
+        sx={{
+          mt: 2,
+          borderRadius: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        startIcon={<Plus />}
       >
-        Create item
+        צור פריט
       </Button>
 
       <Dialog open={modalOpen} onClose={handleCloseModal}>
-        <DialogTitle>Confirmation</DialogTitle>
+        <DialogTitle>אישור</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <Box
@@ -70,12 +78,12 @@ const CreateWorkerForm = () => {
             sx={{ maxWidth: 400, mx: "auto", mt: 2 }}
           >
             <Typography variant="h4" component="h2" gutterBottom>
-              Create New item
+              צור פריט חדש
             </Typography>
             {message && <Alert severity="success">{message}</Alert>}
             {error && <Alert severity="error">{error}</Alert>}
             <TextField
-              label="Name"
+              label="שם"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -83,7 +91,7 @@ const CreateWorkerForm = () => {
               margin="normal"
             />
             <TextField
-              label="Price"
+              label="מחיר"
               type="number"
               value={price}
               onChange={(e) => setPrice(e.target.value)}
@@ -94,9 +102,9 @@ const CreateWorkerForm = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button onClick={handleCloseModal}>ביטול</Button>
           <Button type="submit" onClick={handleSubmit} color="primary">
-            Confirm
+            אשר
           </Button>
         </DialogActions>
       </Dialog>

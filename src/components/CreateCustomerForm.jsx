@@ -12,6 +12,7 @@ import {
   DialogContentText,
   DialogTitle,
 } from "@mui/material";
+import { Plus } from "lucide-react";
 
 const CreateCustomerForm = () => {
   const [name, setName] = useState("");
@@ -47,7 +48,7 @@ const CreateCustomerForm = () => {
       setEmail("");
       setPassword("");
     } catch (error) {
-      setError(error.response?.data?.message || "Failed to create customer");
+      setError(error.response?.data?.message || "נכשל ביצירת לקוח");
     }
   };
 
@@ -58,13 +59,20 @@ const CreateCustomerForm = () => {
         variant="contained"
         color="primary"
         fullWidth
-        sx={{ mt: 2 }}
+        sx={{
+          mt: 2,
+          borderRadius: "20px",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+        startIcon={<Plus />}
       >
-        Create Customer
+        צור לקוח
       </Button>
 
       <Dialog open={modalOpen} onClose={handleCloseModal}>
-        <DialogTitle>Confirmation</DialogTitle>
+        <DialogTitle>אישור</DialogTitle>
         <DialogContent>
           <DialogContentText></DialogContentText>
           <Box
@@ -73,12 +81,12 @@ const CreateCustomerForm = () => {
             sx={{ maxWidth: 400, mx: "auto", mt: 2 }}
           >
             <Typography variant="h4" component="h2" gutterBottom>
-              Create New Customer
+              צור לקוח חדש
             </Typography>
             {message && <Alert severity="success">{message}</Alert>}
             {error && <Alert severity="error">{error}</Alert>}
             <TextField
-              label="Name"
+              label="שם"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -86,7 +94,7 @@ const CreateCustomerForm = () => {
               margin="normal"
             />
             <TextField
-              label="Email"
+              label="אימייל"
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -95,7 +103,7 @@ const CreateCustomerForm = () => {
               margin="normal"
             />
             <TextField
-              label="Password"
+              label="סיסמה"
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -106,9 +114,9 @@ const CreateCustomerForm = () => {
           </Box>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal}>Cancel</Button>
+          <Button onClick={handleCloseModal}>ביטול</Button>
           <Button type="submit" onClick={handleSubmit} color="primary">
-            Confirm
+            אשר
           </Button>
         </DialogActions>
       </Dialog>

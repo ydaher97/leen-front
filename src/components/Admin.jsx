@@ -19,10 +19,12 @@ const Admin = () => {
         width="100%"
         mt={2}
       >
-        <Box width="100%" mt={2}>
-          <CreateCustomerForm />
-          <CreateWorkerForm />
-          <CreateItemForm />
+        <Box width="100%" mt={2} sx={{ textAlign: "-webkit-center" }}>
+          <Box width="50%">
+            <CreateCustomerForm />
+            <CreateWorkerForm />
+            <CreateItemForm />
+          </Box>
           <CustomersList />
           <WorkersList />
         </Box>

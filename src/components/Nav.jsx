@@ -79,7 +79,7 @@ const Navbar = () => {
 
   return (
     <>
-      <AppBar position="static" dir="rtl">
+      <AppBar position="static" dir="rtl" color="secondary">
         <Toolbar>
           <Button color="inherit" onClick={handleDashboardClick}>
             <Typography variant="h6" sx={{ flexGrow: 1 }}>
