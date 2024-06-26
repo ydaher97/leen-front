@@ -8,7 +8,6 @@ export const useCustomer = () => {
 
 export const CustomerProvider = ({ children }) => {
   const [selectedCustomer, setSelectedCustomer] = useState(null);
-  console.log(selectedCustomer);
   return (
     <CustomerContext.Provider value={{ selectedCustomer, setSelectedCustomer }}>
       {children}

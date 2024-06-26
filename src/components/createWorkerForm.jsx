@@ -16,6 +16,8 @@ import { Plus } from "lucide-react";
 
 const CreateWorkerForm = () => {
   const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
@@ -37,6 +39,8 @@ const CreateWorkerForm = () => {
         "https://leen-back.onrender.com/api/workers",
         {
           name,
+          email,
+          password,
         }
       );
       setMessage(response.data.message);
@@ -83,6 +87,24 @@ const CreateWorkerForm = () => {
               label="שם"
               value={name}
               onChange={(e) => setName(e.target.value)}
+              required
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="אימייל"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              label="סיסמה"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               fullWidth
               margin="normal"

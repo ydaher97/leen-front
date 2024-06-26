@@ -28,7 +28,6 @@ const ItemsList = () => {
         const response = await axios.get(
           "https://leen-back.onrender.com/api/items"
         );
-        console.log(response.data);
         setItems(response.data);
         setLoading(false);
       } catch (err) {

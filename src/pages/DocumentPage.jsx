@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import { PDFViewer } from "@react-pdf/renderer";
 import PDFDocument from "../pdf/OrderPdf";
+import ReceiptPdf from "../pdf/ReceiptPdf";
 import Nav from "../components/Nav";
 import { useCustomer } from "../context/CustomerContext";
 import { useUser } from "../context/UserContext";
@@ -28,6 +29,7 @@ const DocumentsPage = () => {
   const [deliveries, setDeliveries] = useState([]);
   const [receipts, setReceipts] = useState([]);
   const [selectedDocument, setSelectedDocument] = useState(null);
+  const [documentType, setDocumentType] = useState("");
   const [modalOpen, setModalOpen] = useState(false);
   const { selectedCustomer } = useCustomer();
   const { user } = useUser();
@@ -69,8 +71,9 @@ const DocumentsPage = () => {
     }
   }, [selectedCustomer._id]);
 
-  const handleViewDocument = (document) => {
+  const handleViewDocument = (document, type) => {
     setSelectedDocument(document);
+    setDocumentType(type);
     setModalOpen(true);
   };
 
@@ -118,7 +121,7 @@ const DocumentsPage = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleViewDocument(order)}
+                        onClick={() => handleViewDocument(order, "order")}
                       >
                         צפה
                       </Button>
@@ -161,7 +164,7 @@ const DocumentsPage = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleViewDocument(invoice)}
+                        onClick={() => handleViewDocument(invoice, "invoice")}
                       >
                         צפה
                       </Button>
@@ -204,7 +207,7 @@ const DocumentsPage = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleViewDocument(delivery)}
+                        onClick={() => handleViewDocument(delivery, "delivery")}
                       >
                         צפה
                       </Button>
@@ -253,7 +256,7 @@ const DocumentsPage = () => {
                       <Button
                         variant="contained"
                         color="primary"
-                        onClick={() => handleViewDocument(receipt)}
+                        onClick={() => handleViewDocument(receipt, "receipt")}
                       >
                         צפה
                       </Button>
@@ -276,11 +279,19 @@ const DocumentsPage = () => {
           <DialogContent>
             {selectedDocument && (
               <PDFViewer width="100%" height="500">
-                <PDFDocument
-                  order={selectedDocument}
-                  customer={selectedCustomer.name}
-                  worker={user.name}
-                />
+                {documentType === "order" ? (
+                  <PDFDocument
+                    order={selectedDocument}
+                    customer={selectedCustomer.name}
+                    worker={user.name}
+                  />
+                ) : (
+                  <ReceiptPdf
+                    receipt={selectedDocument}
+                    customer={selectedCustomer.name}
+                    worker={user.name}
+                  />
+                )}
               </PDFViewer>
             )}
           </DialogContent>

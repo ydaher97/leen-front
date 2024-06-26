@@ -20,17 +20,12 @@ import { useCustomer } from "../context/CustomerContext";
 import { useUser } from "../context/UserContext";
 import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import PDFDocument from "../pdf/OrderPdf";
+import { calculateTotal, calculateBeforeTax } from "../utils/calculations";
 
 const OrderDetails = ({ order }) => {
   const { selectedCustomer } = useCustomer();
   const { user } = useUser();
   const [openPdfViewer, setOpenPdfViewer] = useState(false);
-
-  const calculateTotal = (items) => {
-    return items
-      .reduce((acc, item) => acc + item.price * item.quantity, 0)
-      .toFixed(2);
-  };
 
   const handleOpenPdfViewer = () => {
     setOpenPdfViewer(true);
@@ -39,6 +34,9 @@ const OrderDetails = ({ order }) => {
   const handleClosePdfViewer = () => {
     setOpenPdfViewer(false);
   };
+
+  const total = calculateTotal(order.items);
+  const beforeTax = calculateBeforeTax(total);
 
   return (
     <Container sx={{ direction: "rtl" }}>
@@ -62,6 +60,7 @@ const OrderDetails = ({ order }) => {
               <TableCell>שם</TableCell>
               <TableCell align="right">כמות</TableCell>
               <TableCell align="right">מחיר</TableCell>
+              <TableCell align="right">סה"כ לפני מס</TableCell>
               <TableCell align="right">סה"כ</TableCell>
             </TableRow>
           </TableHead>
@@ -72,6 +71,9 @@ const OrderDetails = ({ order }) => {
                 <TableCell align="right">{item.quantity}</TableCell>
                 <TableCell align="right">₪{item.price.toFixed(2)}</TableCell>
                 <TableCell align="right">
+                  ₪{((item.price * item.quantity) / 1.175).toFixed(2)}
+                </TableCell>
+                <TableCell align="right">
                   ₪{(item.price * item.quantity).toFixed(2)}
                 </TableCell>
               </TableRow>
@@ -79,12 +81,19 @@ const OrderDetails = ({ order }) => {
             <TableRow>
               <TableCell rowSpan={3} />
               <TableCell colSpan={2}>
+                <Typography variant="h6">סה"כ לפני מס</Typography>
+              </TableCell>
+              <TableCell align="right">
+                <Typography variant="h6">₪{beforeTax}</Typography>
+              </TableCell>
+              <TableCell rowSpan={3} />
+            </TableRow>
+            <TableRow>
+              <TableCell colSpan={2}>
                 <Typography variant="h6">סה"כ</Typography>
               </TableCell>
               <TableCell align="right">
-                <Typography variant="h6">
-                  ₪{calculateTotal(order.items)}
-                </Typography>
+                <Typography variant="h6">₪{total}</Typography>
               </TableCell>
             </TableRow>
           </TableBody>

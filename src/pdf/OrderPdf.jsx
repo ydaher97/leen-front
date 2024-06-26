@@ -1,4 +1,3 @@
-import React from "react";
 import {
   Page,
   Text,
@@ -8,7 +7,7 @@ import {
   Font,
 } from "@react-pdf/renderer";
 import rubikFont from "../assets/fonts/Rubik-VariableFont_wght.ttf";
-
+import { calculateBeforeTax, calculateTotal } from "../utils/calculations";
 // Register custom font
 Font.register({
   family: "Rubik",
@@ -21,7 +20,6 @@ const styles = StyleSheet.create({
   page: {
     padding: 30,
     backgroundColor: "#FFFFFF",
-    // direction: "rtl",
     fontFamily: "Rubik",
   },
   header: {
@@ -46,7 +44,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   tableColHeader: {
-    width: "25%",
+    width: "20%",
     borderStyle: "solid",
     borderColor: "#000",
     borderBottomColor: "#000",
@@ -56,7 +54,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#f3f3f3",
   },
   tableCol: {
-    width: "25%",
+    width: "20%",
     borderStyle: "solid",
     borderColor: "#000",
     borderBottomColor: "#000",
@@ -83,58 +81,67 @@ const styles = StyleSheet.create({
   },
 });
 
-const PDFDocument = ({ order, customer, worker }) => (
-  <Document>
-    <Page size="A4" style={styles.page}>
-      <Text style={styles.header}>פרטי הזמנה</Text>
-      <View style={styles.section}>
-        <Text>מספר הזמנה: {order._id}</Text>
-        <Text>לקוח: {customer}</Text>
-        <Text>תאריך: {new Date(order.date).toLocaleString()}</Text>
-        <Text>עובד: {worker}</Text>
-      </View>
-      <View style={styles.table}>
-        <View style={styles.tableRow}>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>סה"כ</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>מחיר</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>כמות</Text>
-          </View>
-          <View style={styles.tableColHeader}>
-            <Text style={styles.tableCellHeader}>שם</Text>
-          </View>
+const PDFDocument = ({ order, customer, worker }) => {
+  const total = calculateTotal(order.items);
+  const totalBeforeTax = calculateBeforeTax(total);
+
+  return (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <Text style={styles.header}>פרטי הזמנה</Text>
+        <View style={styles.section}>
+          <Text> {order._id} :מספר הזמנה</Text>
+          <Text> {customer} :לקוח</Text>
+          <Text> {new Date(order.date).toLocaleString()}: תאריך</Text>
+          <Text> {worker} :עובד</Text>
         </View>
-        {order.items.map((item, index) => (
-          <View style={styles.tableRow} key={index}>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>
-                ₪{(item.price * item.quantity).toFixed(2)}
-              </Text>
+        <View style={styles.table}>
+          <View style={styles.tableRow}>
+            <View style={styles.tableColHeader}>
+              <Text style={styles.tableCellHeader}>סה"כ</Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>₪{item.price.toFixed(2)}</Text>
+            <View style={styles.tableColHeader}>
+              <Text style={styles.tableCellHeader}>סה"כ לפני מס</Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item.quantity}</Text>
+            <View style={styles.tableColHeader}>
+              <Text style={styles.tableCellHeader}>מחיר</Text>
             </View>
-            <View style={styles.tableCol}>
-              <Text style={styles.tableCell}>{item.name}</Text>
+            <View style={styles.tableColHeader}>
+              <Text style={styles.tableCellHeader}>כמות</Text>
+            </View>
+            <View style={styles.tableColHeader}>
+              <Text style={styles.tableCellHeader}>שם</Text>
             </View>
           </View>
-        ))}
-      </View>
-      <Text style={styles.totalText}>
-        סה"כ: ₪
-        {order.items
-          .reduce((acc, item) => acc + item.price * item.quantity, 0)
-          .toFixed(2)}
-      </Text>
-    </Page>
-  </Document>
-);
+          {order.items.map((item, index) => (
+            <View style={styles.tableRow} key={index}>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  ₪{(item.price * item.quantity).toFixed(2)}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>
+                  ₪{((item.price * item.quantity) / 1.175).toFixed(2)}
+                </Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>₪{item.price.toFixed(2)}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{item.quantity}</Text>
+              </View>
+              <View style={styles.tableCol}>
+                <Text style={styles.tableCell}>{item.name}</Text>
+              </View>
+            </View>
+          ))}
+        </View>
+        <Text style={styles.totalText}>סה"כ לפני מס: ₪{totalBeforeTax}</Text>
+        <Text style={styles.totalText}>סה"כ: ₪{total}</Text>
+      </Page>
+    </Document>
+  );
+};
 
 export default PDFDocument;

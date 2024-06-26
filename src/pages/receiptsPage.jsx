@@ -204,6 +204,7 @@ const ReceiptsPage = () => {
             variant="contained"
             color="primary"
             onClick={handleSaveReceipts}
+            sx={{ marginTop: "10px" }}
           >
             שמור
           </Button>

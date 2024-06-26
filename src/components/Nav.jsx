@@ -97,7 +97,10 @@ const Navbar = () => {
             <MenuListItem onClick={handleLogout}>התנתקות</MenuListItem>
           </Menu>
           {selectedCustomer?.name && (
-            <Typography variant="body1" sx={{ mr: 2 }}>
+            <Typography
+              variant="body1"
+              sx={{ mr: 2, border: "1px solid", p: 2 }}
+            >
               לקוח : {selectedCustomer.name}
             </Typography>
           )}
